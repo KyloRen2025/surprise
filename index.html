@@ -1,0 +1,351 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Surprise</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            overflow: hidden;
+        }
+
+        /* Page d'accueil */
+        #welcome-page {
+            text-align: center;
+            background: white;
+            padding: 50px 40px;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            max-width: 400px;
+            width: 90%;
+            animation: fadeIn 0.8s ease-in;
+        }
+
+        #welcome-page h1 {
+            color: #667eea;
+            margin-bottom: 30px;
+            font-size: 2em;
+        }
+
+        #welcome-page p {
+            color: #666;
+            margin-bottom: 25px;
+            font-size: 1.1em;
+        }
+
+        #name-input {
+            width: 100%;
+            padding: 15px;
+            font-size: 1.1em;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            transition: border-color 0.3s;
+        }
+
+        #name-input:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        #submit-btn {
+            width: 100%;
+            padding: 15px;
+            font-size: 1.1em;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+            font-weight: bold;
+        }
+
+        #submit-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(102, 126, 234, 0.4);
+        }
+
+        #submit-btn:active {
+            transform: translateY(0);
+        }
+
+        /* Page de célébration */
+        #birthday-page {
+            display: none;
+            text-align: center;
+            animation: fadeIn 1s ease-in;
+        }
+
+        #birthday-page.active {
+            display: block;
+        }
+
+        .birthday-card {
+            background: white;
+            padding: 60px 40px;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            max-width: 500px;
+            width: 90%;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .birthday-title {
+            font-size: 3em;
+            color: #667eea;
+            margin-bottom: 20px;
+            animation: bounce 1s ease-in-out infinite;
+        }
+
+        .birthday-name {
+            font-size: 2.5em;
+            color: #764ba2;
+            margin-bottom: 30px;
+            font-weight: bold;
+        }
+
+        .birthday-message {
+            font-size: 1.3em;
+            color: #555;
+            line-height: 1.6;
+            margin-bottom: 30px;
+        }
+
+        .balloons {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+            pointer-events: none;
+            overflow: hidden;
+        }
+
+        .balloon {
+            position: absolute;
+            width: 50px;
+            height: 60px;
+            border-radius: 50% 50% 50% 50% / 60% 60% 40% 40%;
+            animation: float 6s ease-in-out infinite;
+        }
+
+        .balloon:nth-child(1) {
+            background: #ff6b6b;
+            left: 10%;
+            animation-delay: 0s;
+        }
+
+        .balloon:nth-child(2) {
+            background: #4ecdc4;
+            left: 30%;
+            animation-delay: 1s;
+        }
+
+        .balloon:nth-child(3) {
+            background: #ffe66d;
+            left: 50%;
+            animation-delay: 2s;
+        }
+
+        .balloon:nth-child(4) {
+            background: #a8e6cf;
+            left: 70%;
+            animation-delay: 3s;
+        }
+
+        .balloon:nth-child(5) {
+            background: #ff8b94;
+            left: 90%;
+            animation-delay: 4s;
+        }
+
+        .confetti {
+            position: absolute;
+            width: 10px;
+            height: 10px;
+            background: #f0f;
+            animation: confetti-fall 3s linear infinite;
+        }
+
+        .confetti:nth-child(6) { left: 15%; animation-delay: 0s; background: #ff6b6b; }
+        .confetti:nth-child(7) { left: 35%; animation-delay: 0.5s; background: #4ecdc4; }
+        .confetti:nth-child(8) { left: 55%; animation-delay: 1s; background: #ffe66d; }
+        .confetti:nth-child(9) { left: 75%; animation-delay: 1.5s; background: #a8e6cf; }
+        .confetti:nth-child(10) { left: 95%; animation-delay: 2s; background: #ff8b94; }
+
+        .cake {
+            font-size: 5em;
+            margin: 20px 0;
+            animation: shake 0.5s ease-in-out infinite;
+        }
+
+        .reset-btn {
+            padding: 12px 30px;
+            font-size: 1em;
+            background: #764ba2;
+            color: white;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: transform 0.2s;
+            margin-top: 20px;
+        }
+
+        .reset-btn:hover {
+            transform: scale(1.05);
+        }
+
+        /* Animations */
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes bounce {
+            0%, 100% {
+                transform: translateY(0);
+            }
+            50% {
+                transform: translateY(-10px);
+            }
+        }
+
+        @keyframes float {
+            0%, 100% {
+                transform: translateY(100vh) rotate(0deg);
+            }
+            50% {
+                transform: translateY(-20px) rotate(180deg);
+            }
+        }
+
+        @keyframes confetti-fall {
+            0% {
+                transform: translateY(-100vh) rotate(0deg);
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(100vh) rotate(720deg);
+                opacity: 0;
+            }
+        }
+
+        @keyframes shake {
+            0%, 100% {
+                transform: rotate(0deg);
+            }
+            25% {
+                transform: rotate(-5deg);
+            }
+            75% {
+                transform: rotate(5deg);
+            }
+        }
+
+        .hidden {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <!-- Page d'accueil -->
+    <div id="welcome-page">
+        <h1>🎉 Surprise 🎉</h1>
+        <p>Entrez votre nom pour découvrir votre message personnalisé !</p>
+        <input type="text" id="name-input" placeholder="Votre nom..." autocomplete="off">
+        <button id="submit-btn">Continuer</button>
+    </div>
+
+    <!-- Page d'anniversaire -->
+    <div id="birthday-page">
+        <div class="birthday-card">
+            <div class="balloons">
+                <div class="balloon"></div>
+                <div class="balloon"></div>
+                <div class="balloon"></div>
+                <div class="balloon"></div>
+                <div class="balloon"></div>
+                <div class="confetti"></div>
+                <div class="confetti"></div>
+                <div class="confetti"></div>
+                <div class="confetti"></div>
+                <div class="confetti"></div>
+            </div>
+            
+            <h1 class="birthday-title">Joyeux Anniversaire</h1>
+            <div class="cake">🎂</div>
+            <p class="birthday-name" id="display-name"></p>
+            <p class="birthday-message">
+                Ma chère Maman, en ce jour si spécial, je veux que tu saches à quel point tu illumines ma vie chaque jour. 🌟
+            Tu es bien plus qu'une mère, tu es ma confidente, ma meilleure amie, mon roc. 💎 Depuis ma naissance, tu as été là à chaque étape, me guidant avec patience et sagesse, m'encourageant dans mes rêves et me relevant dans mes épreuves. 🌈
+            Ton amour inconditionnel est le plus beau cadeau que la vie m'ait offert. ❤️ Ta force m'inspire, ta douceur me réconforte, et ton sourire éclaire même mes jours les plus sombres. ☀️
+            Merci pour tous les sacrifices que tu as faits, pour les nuits blanches, pour les câlins réparateurs, pour les conseils précieux. 🤗 Merci d'avoir cru en moi même quand je doutais de moi-même. 🦋
+            Aujourd'hui, je célèbre non seulement ton anniversaire, mais aussi la femme extraordinaire que tu es. Une maman en or qui mérite tout le bonheur du monde. 👑✨
+            Que cette nouvelle année t'apporte autant de joie que celle que tu m'offres quotidiennement. Que tes rêves se réalisent et que ta vie soit remplie de moments magiques. 🎊🎈
+            Je t'aime plus que les mots ne pourront jamais l'exprimer, aujourd'hui et pour toujours. 💕🌸
+            Joyeux anniversaire, Maman ! Tu es et seras toujours mon plus grand trésor. 🎂🎁💖
+            </p>
+            <button class="reset-btn" onclick="reset()">Retour</button>
+        </div>
+    </div>
+
+    <script>
+        const nameInput = document.getElementById('name-input');
+        const submitBtn = document.getElementById('submit-btn');
+        const welcomePage = document.getElementById('welcome-page');
+        const birthdayPage = document.getElementById('birthday-page');
+        const displayName = document.getElementById('display-name');
+
+        // Fonction pour afficher la page d'anniversaire
+        function showBirthdayPage() {
+            const name = nameInput.value.trim();
+            
+            if (name === '') {
+                alert('Veuillez entrer votre nom !');
+                return;
+            }
+            
+            displayName.textContent = name;
+            welcomePage.classList.add('hidden');
+            birthdayPage.classList.add('active');
+        }
+
+        // Fonction pour revenir à la page d'accueil
+        function reset() {
+            welcomePage.classList.remove('hidden');
+            birthdayPage.classList.remove('active');
+            nameInput.value = '';
+        }
+
+        // Événement clic sur le bouton
+        submitBtn.addEventListener('click', showBirthdayPage);
+
+        // Événement touche Entrée
+        nameInput.addEventListener('keypress', function(event) {
+            if (event.key === 'Enter') {
+                showBirthdayPage();
+            }
+        });
+    </script>
+</body>
+</html>
